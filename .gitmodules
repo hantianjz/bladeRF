@@ -1,3 +1,6 @@
 [submodule "thirdparty/analogdevicesinc/no-OS"]
 	path = thirdparty/analogdevicesinc/no-OS
 	url = https://github.com/analogdevicesinc/no-OS/
+[submodule "hdl/fpga/ip/nuand/adsb"]
+	path = hdl/fpga/ip/nuand/adsb
+	url = git@github.com:Nuand/bladeRF-adsb.git
