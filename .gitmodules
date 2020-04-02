@@ -4,3 +4,6 @@
 [submodule "hdl/fpga/ip/nuand/adsb"]
 	path = hdl/fpga/ip/nuand/adsb
 	url = git@github.com:Nuand/bladeRF-adsb.git
+[submodule "thirdparty/fx3_sdk"]
+	path = thirdparty/fx3_sdk
+	url = git@github.com:hantianjz/cy_fx3_sdk.git
