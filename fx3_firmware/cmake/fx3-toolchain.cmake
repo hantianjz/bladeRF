@@ -14,9 +14,9 @@ cmake_minimum_required(VERSION 2.8)
 # FX3 SDK paths and files
 ################################################################################
 
-set(FX3_SDK_VERSION         "1.3.3")     
+set(FX3_SDK_VERSION         "1.3.4")
 set(ARM_TOOLCHAIN_VERSION   "2013.11")
-set(GCC_VERSION             "4.8.1")     
+set(GCC_VERSION             "4.8.1")
 
 # There seems to be some known strange behavior where CMake loses track of
 # cached variables when (re)parsing toolchain files. This is a workaround
