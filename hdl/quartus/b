@@ -1,0 +1,7 @@
+#!/bin/bash
+export QUARTUS_ROOTDIR=/home/hantian/Development/intelFPGA/19.1/quartus 
+export SOPC_KIT_NIOS2=/home/hantian/Development/intelFPGA/19.1/nios2eds
+
+export PATH=$PATH:~/Development/intelFPGA/19.1/quartus/bin:~/Development/intelFPGA/19.1/quartus/sopc_builder/bin/:~/Development/intelFPGA/19.1/nios2eds/sdk2/bin:~/Development/intelFPGA/19.1/nios2eds/bin:~/Development/intelFPGA/19.1/nios2eds/bin/gnu/H-x86_64-pc-linux-gnu/bin
+
+./build_bladerf.sh -b bladeRF-micro -r hosted -s A4 -c 
