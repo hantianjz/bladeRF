@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.8)
 
 project(bladeRF)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Indicate that this is a top-level build
 set(BLADERF_TOP_LEVEL_BUILD ON)
 
