@@ -1,7 +1,25 @@
 #!/bin/bash
-export QUARTUS_ROOTDIR=/home/hantian/Development/intelFPGA/19.1/quartus 
-export SOPC_KIT_NIOS2=/home/hantian/Development/intelFPGA/19.1/nios2eds
 
-export PATH=$PATH:~/Development/intelFPGA/19.1/quartus/bin:~/Development/intelFPGA/19.1/quartus/sopc_builder/bin/:~/Development/intelFPGA/19.1/nios2eds/sdk2/bin:~/Development/intelFPGA/19.1/nios2eds/bin:~/Development/intelFPGA/19.1/nios2eds/bin/gnu/H-x86_64-pc-linux-gnu/bin
+#*****************CURR_FILE_DIR*****************
+# Get directory of current script file, follow symlink if needed.
+CURR_FILE="${BASH_SOURCE[0]}"
+if [ -L ${CURR_FILE} ]; then
+	CURR_FILE=`readlink ${CURR_FILE}`
+fi
+CURR_FILE_DIR="$(cd "$(dirname "${CURR_FILE}" )" && pwd )"
+unset CURR_FILE
+#*****************CURR_FILE_DIR*****************
 
-./build_bladerf.sh -b bladeRF-micro -r hosted -s A4 -c 
+if [ "${1}" == "" ]; then
+    echo -e "\nError: intel fpga root path is needed.\n" >&2
+    exit 1
+fi
+
+export INTEL_FPGA_ROOT=`realpath $1`
+
+export QUARTUS_ROOTDIR=${INTEL_FPGA_ROOT}/quartus
+export SOPC_KIT_NIOS2=${INTEL_FPGA_ROOT}/nios2eds
+
+export PATH=$PATH:${INTEL_FPGA_ROOT}/quartus/bin:${INTEL_FPGA_ROOT}/quartus/sopc_builder/bin/:${INTEL_FPGA_ROOT}/nios2eds/sdk2/bin:${INTEL_FPGA_ROOT}/nios2eds/bin:${INTEL_FPGA_ROOT}/nios2eds/bin/gnu/H-x86_64-pc-linux-gnu/bin
+
+${CURR_FILE_DIR}/build_bladerf.sh -b bladeRF-micro -r hosted -s A4 -c

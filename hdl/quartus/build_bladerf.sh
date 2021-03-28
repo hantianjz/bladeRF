@@ -3,9 +3,19 @@
 # Build a bladeRF fpga image
 ################################################################################
 
+#*****************CURR_FILE_DIR*****************
+# Get directory of current script file, follow symlink if needed.
+CURR_FILE="${BASH_SOURCE[0]}"
+if [ -L ${CURR_FILE} ]; then
+	CURR_FILE=`readlink ${CURR_FILE}`
+fi
+CURR_FILE_DIR="$(cd "$(dirname "${CURR_FILE}" )" && pwd )"
+unset CURR_FILE
+#*****************CURR_FILE_DIR*****************
+
 function print_boards() {
     echo "Supported boards:"
-    for i in ../fpga/platforms/*/build/platform.conf ; do
+    for i in ${CURR_FILE_DIR}/../fpga/platforms/*/build/platform.conf ; do
         source $i
         echo "    [*] $BOARD_NAME";
         echo "        Supported revisions:"
@@ -45,6 +55,10 @@ function usage()
     echo "       full (default)       Fit the design and create programming files"
     echo "    -S <seed>             Fitter seed setting (default: 1)"
     echo "    -h                    Show this text"
+    echo "ENV variables:"
+    echo "Needs:"
+    echo "    \$QUARTUS_ROOTDIR"
+    echo "    \$SOPC_KIT_NIOS2"
     echo ""
 
     print_boards
@@ -201,7 +215,19 @@ if [ "$rev" == "" ]; then
     exit 1
 fi
 
-for plat in ../fpga/platforms/*/build/platform.conf ; do
+if [ "${QUARTUS_ROOTDIR}" == "" ]; then
+    echo -e "\nError: ENV variable QUARTUS_ROOTDIR path is needed.\n" >&2
+    print_boards
+    exit 1
+fi
+
+if [ "${SOPC_KIT_NIOS2}" == "" ]; then
+    echo -e "\nError: ENV variable SOPC_KIT_NIOS2 path is needed.\n" >&2
+    print_boards
+    exit 1
+fi
+
+for plat in ${CURR_FILE_DIR}/../fpga/platforms/*/build/platform.conf ; do
     source $plat
     if [ $board == "$BOARD_NAME" ]; then
         platform=$(basename $(dirname $(dirname $plat)))
@@ -293,7 +319,7 @@ if [ $(expr ${QUARTUS_VER[major]} \>= 19 ) -eq 1 ]; then
    export PERL5LIB=$(echo ${QUARTUS_ROOTDIR}/linux64/perl/lib/*.*/)
 fi
 
-nios_system=../fpga/ip/altera/nios_system
+nios_system=${CURR_FILE_DIR}/../fpga/ip/altera/nios_system
 
 # 9a484b436: Windows-specific workaround for Quartus bug
 if [ "x$(uname)" != "xLinux" ]; then
@@ -306,7 +332,7 @@ fi
 # Error out at the first sign of trouble
 set -e
 
-work_dir="work/${platform}-${size}-${rev}"
+work_dir="${CURR_FILE_DIR}/work/${platform}-${size}-${rev}"
 
 if [ "$clear_work_dir" == "1" ]; then
     echo -e "\nClearing ${work_dir} directory\n" >&2
@@ -317,8 +343,8 @@ mkdir -p ${work_dir}
 pushd ${work_dir}
 
 # These paths are relative to $work_dir
-common_dir=../../../fpga/platforms/common/bladerf
-build_dir=../../../fpga/platforms/${platform}/build
+common_dir=`realpath ${CURR_FILE_DIR}/../fpga/platforms/common/bladerf`
+build_dir=`realpath ${CURR_FILE_DIR}/../fpga/platforms/${platform}/build`
 
 cp -au ${build_dir}/ip.ipx .
 
@@ -483,3 +509,4 @@ echo ""
 
 # Delete empty SOPC directories in the user's home directory
 find ~ -maxdepth 1 -type d -empty -iname "sopc_altera_pll*" -delete
+
